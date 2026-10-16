@@ -5,14 +5,14 @@ spring:
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/payments}
     username: ${DATABASE_USERNAME:payments}
-    # Sem valor padrão de propósito: se a senha não vier do ambiente, a aplicação não sobe.
+    # No default on purpose: if the password is not provided by the environment, the app fails to start.
     password: ${DATABASE_PASSWORD}
 
   jpa:
-    # Desliga o anti-pattern de manter a sessão do Hibernate aberta até a view/serialização.
+    # Disables the anti-pattern of keeping the Hibernate session open until view/serialization.
     open-in-view: false
     hibernate:
-      # Quem cria e altera tabelas é o Flyway; o Hibernate só confere se as entidades batem.
+      # Flyway creates and alters tables; Hibernate only checks that the entities match.
       ddl-auto: validate
 
   flyway:
@@ -22,11 +22,11 @@ spring:
     livereload:
       enabled: false
     restart:
-      # Só reinicia quando docker/dev.sh terminar uma compilação com sucesso.
+      # Restart only after docker/dev.sh finishes a successful compilation.
       trigger-file: .reloadtrigger
 
 server:
-  # Termina as requisições em andamento antes de desligar (importante para pagamentos).
+  # Finish in-flight requests before shutting down (important for payments).
   shutdown: graceful
 
 management:

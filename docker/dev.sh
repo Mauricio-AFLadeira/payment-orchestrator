@@ -1,12 +1,12 @@
 #!/bin/sh
-# Loop de desenvolvimento dentro do container.
+# Development loop inside the container.
 #
-# 1. Compila uma vez e sobe a aplicação com `spring-boot:run` (debug remoto na 5005).
-# 2. Em paralelo, a cada 2s verifica se algo em src/main ou no pom.xml mudou; se mudou, recompila.
-# 3. Se compilou, toca target/classes/.reloadtrigger e o spring-boot-devtools reinicia a aplicação
-#    (uma vez só; com erro de compilação a versão anterior continua no ar).
+# 1. Compiles once and starts the app with `spring-boot:run` (remote debug on 5005).
+# 2. In parallel, every 2s checks whether src/main or pom.xml changed; if so, recompiles.
+# 3. On success, touches target/classes/.reloadtrigger and spring-boot-devtools restarts the app
+#    (once; on a compilation error the previous version keeps running).
 #
-# Polling em vez de inotify: eventos de arquivo nem sempre atravessam o volume no macOS/Windows.
+# Polling instead of inotify: file events do not always cross the volume on macOS/Windows.
 set -e
 
 MARKER=target/.last-compile
@@ -20,11 +20,11 @@ touch "$MARKER"
     sleep 2
     if [ -n "$(find src/main pom.xml -newer "$MARKER" -type f 2>/dev/null | head -n 1)" ]; then
       touch "$MARKER"
-      echo "[dev] mudança detectada, recompilando..."
+      echo "[dev] change detected, recompiling..."
       if ./mvnw -q -B compile; then
         touch "$TRIGGER"
       else
-        echo "[dev] erro de compilação, aguardando correção..."
+        echo "[dev] compilation error, waiting for a fix..."
       fi
     fi
   done

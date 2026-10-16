@@ -1,8 +1,8 @@
 /**
- * Núcleo do negócio: entidades, value objects e regras de pagamento (ex.: {@code Payment},
- * {@code Money}, a máquina de estados do pagamento).
+ * Business core: entities, value objects and payment rules (e.g. {@code Payment}, {@code Money},
+ * the payment state machine).
  *
- * <p>Regra de dependência: este pacote não conhece Spring, JPA, HTTP nem a Juspay. Ele não
- * importa nada de {@code application}, {@code adapter} ou {@code config}.
+ * <p>Dependency rule: this package knows nothing about Spring, JPA, HTTP or Juspay. It does not
+ * import anything from {@code application}, {@code adapter} or {@code config}.
  */
 package dev.payments.orchestrator.domain;

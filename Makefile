@@ -5,41 +5,41 @@
 APP_PORT ?= 8080
 DEBUG_PORT ?= 5005
 
-help:  ## Lista os comandos disponíveis
+help:  ## List available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
-setup:  ## Prepara o projeto pela primeira vez (.env, hooks, build)
+setup:  ## First-time project setup (.env, hooks, build)
 	@test -f .env || cp .env.example .env
 	git config core.hooksPath .githooks
 	docker compose build
 
-up:  ## Sobe o ambiente (app + Postgres)
+up:  ## Start the environment (app + Postgres)
 	docker compose up -d
-	@echo "API em http://localhost:$(APP_PORT) | health: http://localhost:$(APP_PORT)/actuator/health | debug: localhost:$(DEBUG_PORT)"
+	@echo "API at http://localhost:$(APP_PORT) | health: http://localhost:$(APP_PORT)/actuator/health | debug: localhost:$(DEBUG_PORT)"
 
-down:  ## Derruba o ambiente
+down:  ## Stop the environment
 	docker compose down
 
-logs:  ## Acompanha os logs da aplicação
+logs:  ## Follow application logs
 	docker compose logs -f app
 
-shell:  ## Abre um shell dentro do container da aplicação
+shell:  ## Open a shell inside the app container
 	docker compose exec app sh
 
-db-shell:  ## Abre o psql no banco de desenvolvimento
+db-shell:  ## Open psql on the development database
 	docker compose exec db sh -c 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
 
-lint:  ## Verifica a formatação do código (Spotless)
+lint:  ## Check code formatting (Spotless)
 	docker compose exec -T app ./mvnw -q -B spotless:check
 
-fmt:  ## Formata o código (Spotless)
+fmt:  ## Format code (Spotless)
 	docker compose exec -T app ./mvnw -q -B spotless:apply
 
-test:  ## Roda os testes
-	@echo "Ainda não há testes configurados. Próximo passo: JUnit + Testcontainers."
+test:  ## Run tests
+	@echo "No tests configured yet. Next step: JUnit + Testcontainers."
 
-build-prod:  ## Gera a imagem de produção (estágio prod do Dockerfile)
+build-prod:  ## Build the production image (Dockerfile prod stage)
 	docker build --target prod -t payment-orchestrator:local .
 
-reset:  ## Derruba tudo e apaga os volumes (destrói os dados locais)
+reset:  ## Stop everything and delete volumes (destroys local data)
 	docker compose down -v

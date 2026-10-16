@@ -1,13 +1,13 @@
 /**
- * Casos de uso (ex.: criar pagamento, consultar status, processar webhook) e as portas que eles
- * expõem e consomem.
+ * Use cases (e.g. create payment, query status, process webhook) and the ports they expose and
+ * consume.
  *
  * <ul>
- *   <li>{@code port.in}: interfaces que os adapters de entrada chamam (o "o que a API faz").
- *   <li>{@code port.out}: interfaces que o caso de uso precisa do mundo externo (persistência,
- *       gateway de pagamento). Os adapters de saída implementam essas interfaces.
+ *   <li>{@code port.in}: interfaces called by inbound adapters (what the API does).
+ *   <li>{@code port.out}: interfaces the use cases need from the outside world (persistence,
+ *       payment gateway). Outbound adapters implement them.
  * </ul>
  *
- * <p>Depende apenas de {@code domain}. É aqui que ficam as fronteiras de transação.
+ * <p>Depends only on {@code domain}. Transaction boundaries live here.
  */
 package dev.payments.orchestrator.application;

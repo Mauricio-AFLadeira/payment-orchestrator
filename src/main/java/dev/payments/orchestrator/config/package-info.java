@@ -1,5 +1,5 @@
 /**
- * Configuração transversal do Spring: beans de infraestrutura, {@code @ConfigurationProperties},
- * segurança, observabilidade. Não contém regra de negócio.
+ * Cross-cutting Spring configuration: infrastructure beans, {@code @ConfigurationProperties},
+ * security, observability. Contains no business rules.
  */
 package dev.payments.orchestrator.config;
