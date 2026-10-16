@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: payment-orchestrator
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/payments}
+    username: ${DATABASE_USERNAME:payments}
+    # Sem valor padrão de propósito: se a senha não vier do ambiente, a aplicação não sobe.
+    password: ${DATABASE_PASSWORD}
+
+  jpa:
+    # Desliga o anti-pattern de manter a sessão do Hibernate aberta até a view/serialização.
+    open-in-view: false
+    hibernate:
+      # Quem cria e altera tabelas é o Flyway; o Hibernate só confere se as entidades batem.
+      ddl-auto: validate
+
+  flyway:
+    locations: classpath:db/migration
+
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      # Só reinicia quando docker/dev.sh terminar uma compilação com sucesso.
+      trigger-file: .reloadtrigger
+
+server:
+  # Termina as requisições em andamento antes de desligar (importante para pagamentos).
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

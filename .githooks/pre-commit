@@ -1,0 +1,14 @@
+#!/bin/sh
+# Verifica a formatação antes de cada commit. Ativado por `make setup`
+# (git config core.hooksPath .githooks).
+
+if ! docker compose ps --status running --services 2>/dev/null | grep -qx app; then
+  echo "[pre-commit] container 'app' fora do ar: lint pulado. Rode 'make up' para validar."
+  exit 0
+fi
+
+echo "[pre-commit] Rodando lint..."
+if ! make lint; then
+  echo "[pre-commit] Formatação fora do padrão. Rode 'make fmt' e adicione as mudanças."
+  exit 1
+fi

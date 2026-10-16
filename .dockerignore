@@ -1,0 +1,11 @@
+.git
+.githooks
+.env
+.env.*
+!.env.example
+target
+.idea
+.vscode
+*.iml
+.DS_Store
+README.md

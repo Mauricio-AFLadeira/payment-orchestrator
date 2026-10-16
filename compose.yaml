@@ -1,0 +1,44 @@
+name: payment-orchestrator
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    # tini como PID 1: repassa sinais (graceful shutdown) e recolhe processos órfãos.
+    init: true
+    environment:
+      # Host do banco é o nome do serviço no compose, não localhost.
+      DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-payments}
+      DATABASE_USERNAME: ${POSTGRES_USER:-payments}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+      - "${DEBUG_PORT:-5005}:5005"
+    volumes:
+      - .:/app
+      - maven-repo:/home/app/.m2
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-payments}
+      POSTGRES_USER: ${POSTGRES_USER:-payments}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    # A partir do Postgres 18 o volume é montado em /var/lib/postgresql (não mais .../data).
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:
+  maven-repo:
